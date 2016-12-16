@@ -10,7 +10,6 @@ connect
 /subsystem=resource-adapters/resource-adapter=ispnHotrod/connection-definitions=infinispanHotRodDS/config-properties=AliasCacheName:add(value="alias_cache")
 /subsystem=resource-adapters/resource-adapter=ispnHotrod:activate
 
-/:reload
 
 
 

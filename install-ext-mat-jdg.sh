@@ -6,8 +6,10 @@ if [ "x$1" = "x" ]; then
     echo "where option is:"
     echo "   setup-jdg"
     echo "   start-jdg-server"
+    echo "   stop-jdg-server"
     echo "   setup-jdv or setup-usecase"
     echo "   start-jdv-server"
+    echo "   stop-jdv-server"
     exit
 fi
 

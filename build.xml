@@ -229,7 +229,11 @@
 			<then>
 				<exec dir="${jdv.home}/bin" executable="sh">
 					<env key="JBOSS_HOME" value="${jdv.home}"/>
-					<arg line="jboss-cli.sh -c --file=${qscli}/create-infinispan-resource-adapter-ds.cli"/>
+					<arg line="jboss-cli.sh -c --file=${qscli}/create-datasources.cli"/>
+				</exec>
+				<exec dir="${jdv.home}/bin" executable="sh">
+					<env key="JBOSS_HOME" value="${jdv.home}"/>
+					<arg line="jboss-cli.sh -c --file=${qscli}/create-jdg-resource-adapter.cli"/>
 				</exec>
 			</then>
 			<elseif>
@@ -238,7 +242,12 @@
 					<exec dir="${jdv.home}/bin" executable="cmd">
 						<env key="JBOSS_HOME" value="${jdv.home}"/>
 						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
-						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-infinispan-resource-adapter-ds.cli"/>
+						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-datasources.cli"/>
+					</exec>
+					<exec dir="${jdv.home}/bin" executable="cmd">
+						<env key="JBOSS_HOME" value="${jdv.home}"/>
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-jdg-resource-adapter.cli"/>
 					</exec>
 				</then>
 			</elseif>
@@ -248,10 +257,10 @@
         <target name="update-module">
                 <echo message="Update infinispan-dsl resource adapter module pojo dependency"/>
 
-<replace file="${jdv.home}/${module.relative}">
-  <replacetoken>your.pojo.module</replacetoken>
-  <replacevalue>org.client.quickstart.addressbook.pojos</replacevalue>
-</replace>
+                <replace file="${jdv.home}/${module.relative}">
+                        <replacetoken>your.pojo.module</replacetoken>
+                        <replacevalue>org.client.quickstart.addressbook.pojos</replacevalue>
+                </replace>
         </target>
 
 </project>

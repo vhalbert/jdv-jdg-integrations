@@ -1,4 +1,6 @@
-connect 
+connect
+
+
 /subsystem=resource-adapters/resource-adapter=ispnHotrod:add(module=org.jboss.teiid.resource-adapter.infinispan.dsl)
 /subsystem=resource-adapters/resource-adapter=ispnHotrod/connection-definitions=infinispanHotRodDS:add(jndi-name="java:/PersonJDGSource", class-name=org.teiid.resource.adapter.infinispan.dsl.InfinispanManagedConnectionFactory, enabled=true, use-java-context=true)
 /subsystem=resource-adapters/resource-adapter=ispnHotrod/connection-definitions=infinispanHotRodDS/config-properties=CacheTypeMap:add(value="primary_cache:com.jboss.as.quickstarts.datagrid.hotrod.query.domain.Person;id")
@@ -7,4 +9,8 @@ connect
 /subsystem=resource-adapters/resource-adapter=ispnHotrod/connection-definitions=infinispanHotRodDS/config-properties=StagingCacheName:add(value="staging_cache")
 /subsystem=resource-adapters/resource-adapter=ispnHotrod/connection-definitions=infinispanHotRodDS/config-properties=AliasCacheName:add(value="alias_cache")
 /subsystem=resource-adapters/resource-adapter=ispnHotrod:activate
+
+/:reload
+
+
 

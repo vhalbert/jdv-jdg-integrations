@@ -261,12 +261,12 @@
 
                 <replace file="${jdv.home}/${module.relative}">
                         <replacetoken>your.pojo.module</replacetoken>
-                        <replacevalue>org.client.quickstart.addressbook.pojos</replacevalue>
+                        <replacevalue>com.client.quickstart.addressbook.pojos</replacevalue>
                 </replace>
         </target>
 
 	<target name="copy-data" >
-		<echo message="Copying data file to JDV server"/>
+		<echo message="Copying data from ${qsteiidfiles} to JDV server"/>
 		<copy todir="${jdv.home}">
 			<fileset dir="${qsteiidfiles}"/>
 		</copy>

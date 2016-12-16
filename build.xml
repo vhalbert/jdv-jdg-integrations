@@ -19,6 +19,8 @@
 	<property name="cli" location="${cli.relative}"/>
         <property name="qscli" location="${qs-example}/${cli.relative}"/>
         <property name="qspojo" location="${qs-example}/${pojo.relative}"/>
+        <property name="qsteiidfiles" location="${qs-example}/teiidfiles"/>
+        <property name="qsvdb" location="${qs-example}/vdb"/>
 
 	<osfamily property="os.family"/>
 
@@ -210,7 +212,7 @@
     
     <target name="setup-jdv" depends="add-translator-ra, stop-jdv-server"/>
 
-    <target name="setup-usecase" depends="install-jdv, unzip-pojo, update-module, unzip-jdg-modules, add-translator-ra, config-ra, stop-jdv-server" >
+    <target name="setup-usecase" depends="install-jdv, copy-data, unzip-pojo, update-module, unzip-jdg-modules, add-translator-ra, config-ra, stop-jdv-server, deploy-vdbs" >
 
     </target>
 
@@ -262,5 +264,23 @@
                         <replacevalue>org.client.quickstart.addressbook.pojos</replacevalue>
                 </replace>
         </target>
+
+	<target name="copy-data" >
+		<echo message="Copying data file to JDV server"/>
+		<copy todir="${jdv.home}">
+			<fileset dir="${qsteiidfiles}"/>
+		</copy>
+	</target>
+
+	<target name="deploy-vdbs" >
+		<echo message="Deploying VDBs into JDV"/>
+
+  <copy todir="${jdv.home}/standalone/deployments">
+    <fileset dir="${qsvdb}">
+        <include name="**/*.xml"/>
+        <include name="**/*.dodeploy"/>
+    </fileset>
+  </copy>
+	</target>
 
 </project>

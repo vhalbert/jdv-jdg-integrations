@@ -267,7 +267,7 @@
 
 	<target name="copy-data" >
 		<echo message="Copying data from ${qsteiidfiles} to JDV server"/>
-		<copy todir="${jdv.home}">
+		<copy todir="${jdv.home}/teiidfiles">
 			<fileset dir="${qsteiidfiles}"/>
 		</copy>
 	</target>
@@ -275,12 +275,12 @@
 	<target name="deploy-vdbs" >
 		<echo message="Deploying VDBs into JDV"/>
 
-  <copy todir="${jdv.home}/standalone/deployments">
-    <fileset dir="${qsvdb}">
-        <include name="**/*.xml"/>
-        <include name="**/*.dodeploy"/>
-    </fileset>
-  </copy>
+                <copy todir="${jdv.home}/standalone/deployments">
+                        <fileset dir="${qsvdb}">
+                                <include name="**/*.xml"/>
+                                <include name="**/*.dodeploy"/>
+                        </fileset>
+                </copy>
 	</target>
 
 </project>

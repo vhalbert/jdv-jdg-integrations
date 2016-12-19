@@ -1,8 +1,9 @@
 ## JDV - JDG Integrations
 
 This repository contains the following quick starts for the various JDG integrations:
--  jdv-ext-mat-jdg : JDV External Materialization into JDG Cache
--  jdv-datasource-jdg  : JDV Access Remote JDG Cache as a Data Source (TBD)
+
+*  jdv-ext-mat-jdg : JDV External Materialization into JDG Cache
+*  jdv-datasource-jdg  : JDV Access Remote JDG Cache as a Data Source (TBD)
 
 This repo is put together to help automate/speed up bulk of the setup effort in configuring JDG and JDV to demonstrate these use cases.
 
@@ -11,7 +12,8 @@ This repo is put together to help automate/speed up bulk of the setup effort in 
 * [Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), preferably 1.8 
 * **JAVA_HOME** environment variable set
 * **JAVA_HOME\bin** is on the PATH
-* All of the necessary binaries downloaded. Refer to [binaries] (binaries/README.md) for download locations and filename/versions.
+* For binaries see [binaries] (binaries/README.md) for download locations and filename/versions.
+* For patches see [patches] (patches/README.md) for any patches that maybe needed
 * Familiarity with Apache Ant
 
 ### Running the setup
@@ -31,11 +33,11 @@ The setup of JDG will install JDG server and then configure the following caches
 ```
 #### Setup JBoss Data Virtualization
 
-Use the following command to setup the JDV server. Going forward we will refer to the folder `target/{usecase}/jdv/jboss-eap-6.4/` as **$JDV_HOME**
+There are 2 options for how JDV can be setup; 1) ready to add your own use case or 2) configured with an example of the usecase, ready to test.
 
-There are two options for setting up JDV; 1) ready to add your own use case or 2) configured with an example of the usecase, ready to test
+Use one of the following commands to setup the JDV server. Going forward we will refer to the folder `target/{usecase}/jdv/jboss-eap-6.4/` as **$JDV_HOME**
 
-To setup JDV, that has the hot rod client installed, run:
+To setup JDV and to also install the hot rod client, run:
 ```sh
 ./install-ext-mat-jdg setup-jdv 
 ```
@@ -44,6 +46,8 @@ To setup JDV, that does everthing setup-jdv does, but also configures a resource
 ```sh
 ./install-ext-mat-jdg setup-usecase 
 ```
+
+To see all the possible commands, run ./install-ext-mat-jdg without any parameter.
 
 #### Important Note
 > The password for all accounts on the JDV runtime is `redhat1!`. Refer to **build.properties**.

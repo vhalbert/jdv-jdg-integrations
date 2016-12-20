@@ -63,6 +63,7 @@ To see all the possible commands, run ./install-ext-mat-jdg without any paramete
 #### Important Note
 > The password for all accounts on the JDV runtime is `redhat1!`. Refer to **build.properties**.
 
+
 ### Connecting to jdv-ext-mat-jdg Use Case
 
 If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be connected to:

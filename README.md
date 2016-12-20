@@ -22,15 +22,22 @@ This repo is put together to help automate/speed up bulk of the setup effort in 
 
 Use the following two commands to setup and start the JDG server. Going forward we will refer to the folder `target/{usecase}/jdg/jboss-datagrid-6.6.0-server/` as **$JDG_HOME**
 
-The setup of JDG will install JDG server and then configure the following caches: 1) datasource_cache, 2) primary_cache, 3) staging_cache, and 4) alias_cache.
+The setup of JDG will install JDG server and then configure the following caches: 
+* datasource_cache
+* primary_cache
+* staging_cache
+* alias_cache
 
 ```sh
 # Kick off JDG setup and wait for it to complete
 ./install-ext-mat-jdg setup-jdg
 
+
 # Once complete, start the JDG server
 ./install-ext-mat-jdg start-jdg-server
 ```
+
+
 #### Setup JBoss Data Virtualization
 
 There are 2 options for how JDV can be setup; 1) ready to add your own use case or 2) configured with an example of the usecase, ready to test.
@@ -38,12 +45,16 @@ There are 2 options for how JDV can be setup; 1) ready to add your own use case 
 Use one of the following commands to setup the JDV server. Going forward we will refer to the folder `target/{usecase}/jdv/jboss-eap-6.4/` as **$JDV_HOME**
 
 To setup JDV and to also install the hot rod client, run:
+
 ```sh
+# Kick off JDV setup
 ./install-ext-mat-jdg setup-jdv 
 ```
 
 To setup JDV, that does everthing setup-jdv does, but also configures a resource-adapter to connect to JDG, deploys the pojo, updates the infinispan-dsl resource-adapter module pojo dependency and deploys the Portfolio and PeopleMat VDB's., run the following:
+
 ```sh
+# Kick off JDG and JDG materialization usecase setup
 ./install-ext-mat-jdg setup-usecase 
 ```
 
@@ -51,4 +62,18 @@ To see all the possible commands, run ./install-ext-mat-jdg without any paramete
 
 #### Important Note
 > The password for all accounts on the JDV runtime is `redhat1!`. Refer to **build.properties**.
+
+### Connecting to jdv-ext-mat-jdg Use Case
+
+If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be connected to:
+*  jdbc:teiid:Portolio@mm://localhost:31000
+*  jdbc:teiid:PeopleMat@mm://localhost:31000
+
+The Portfolio is the data that's used for materialization.  The PeopleMat is where the materialization models are configured.
+
+To see the data that's been materializated, use:
+*  Select * from PersonMatView
+
+To PersonMatCache is the model of the caches used for materialization.
+
 

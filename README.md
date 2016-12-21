@@ -47,14 +47,14 @@ Use one of the following commands to setup the JDV server. Going forward we will
 To setup JDV and to also install the hot rod client, run:
 
 ```sh
-# Kick off JDV setup
+# 1) Kick off JDV setup
 ./install-ext-mat-jdg setup-jdv 
 ```
 
 To setup JDV, that does everthing setup-jdv does, but also configures a resource-adapter to connect to JDG, deploys the pojo, updates the infinispan-dsl resource-adapter module pojo dependency and deploys the Portfolio and PeopleMat VDB's., run the following:
 
 ```sh
-# Kick off JDG and JDG materialization usecase setup
+# 2) Kick off JDG and JDG materialization usecase setup
 ./install-ext-mat-jdg setup-usecase 
 ```
 

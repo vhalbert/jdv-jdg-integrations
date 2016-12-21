@@ -7,7 +7,7 @@
         This project automates the deployment of all the necessary components 
         to demonstrate external materialization from JBoss Data Virtualization (version: ${jdv.version})
         into JBoss Data Grid (verison: ${jdg.version})
-    </description>
+        </description>
 
 	<!-- Set necessary properties -->
 	<property name="patches" location="${patches.relative}"/>
@@ -17,12 +17,18 @@
 	<property name="jdg.home" location="${jdg.home.relative}"/>
 	<property name="jdv.home" location="${jdv.home.relative}"/>
 	<property name="cli" location="${cli.relative}"/>
+        <property name="qsexample" location="${qs-example}"/>
         <property name="qscli" location="${qs-example}/${cli.relative}"/>
         <property name="qspojo" location="${qs-example}/${pojo.relative}"/>
         <property name="qsteiidfiles" location="${qs-example}/teiidfiles"/>
         <property name="qsvdb" location="${qs-example}/vdb"/>
 
 	<osfamily property="os.family"/>
+
+        <import file="${qsexample}/usecase-build.xml"/>
+<!-- import usecase build file -->
+
+
 
 	<target name="start-jdg-server">
 		<echo message="Starting the JBoss JDG ${jdg.version} server in clustered mode"/>
@@ -178,22 +184,28 @@
 
     <target name="setup-jdg" depends="setup-jdg-caches, stop-jdg-server"/>
 
-    <target name="clean-jdv">
-        <echo message="Cleaning the ${jdv.home} folder"/>
-        <echo message="If this fails, manually delete ${jdv.home} folder and rerun"/>
-        <delete quiet="true" includeemptydirs="true">
-            <fileset dir="${jdv.home}" includes="**/*" />
-        </delete>
-    </target>
 
-	<target name="install-jdv" depends="clean-jdv">
+	<target name="install-jdv" depends="clean-jdv, install-jdv-kit, unzip-hotrod-modules">
+
+	</target>
+
+        <target name="clean-jdv">
+                <echo message="Cleaning the ${jdv.home} folder"/>
+                <echo message="If this fails, manually delete ${jdv.home} folder and rerun"/>
+                <delete quiet="true" includeemptydirs="true">
+                <fileset dir="${jdv.home}" includes="**/*" />
+                </delete>
+        </target>
+
+
+	<target name="install-jdv-kit">
 		<echo message="Installing JDV ${jdv.version} server"/>
 		<java jar="${binaries}/jboss-dv-installer-${jdv.installer.version}.jar" fork="true" failonerror="true">
                         <arg value="${install-configs}/dv-${jdv.version}-installation-config.xml"/>
 		</java>
 	</target>
 
-	<target name="unzip-hotrod-modules" depends="install-jdv">
+	<target name="unzip-hotrod-modules">
 		<echo message="Unzipping JDG EAP Hotrod modules into JDV"/>
 		<unzip src="${binaries}/jboss-datagrid-${jdg.patch.version}-eap-modules-remote-java-client.zip" dest="${jdv.home}" />
 		<copy todir="${jdv.home}/modules">
@@ -201,7 +213,7 @@
 		</copy>
 	</target>
 
-        <target name="apply-jdv-patch" >
+        <target name="apply-jdv-patch" depends="start-jdv-server" >
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
 			<then>
@@ -221,7 +233,7 @@
 		</if>
         </target>
 
-	<target name="apply-jdv-patchx" unless="skipPatching">
+	<target name="apply-jdv-patchx" depends="start-jdv-server"  unless="skipPatching">
 		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
 		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Patching JBoss JDV ${jdv.version} server in standalone mode"/>
@@ -246,7 +258,7 @@
 		</if>
 	</target>
 
-	<target name="add-translator-ra" depends="unzip-hotrod-modules, start-jdv-server, apply-jdv-patch">
+	<target name="add-translator-ra" depends="apply-jdv-patch">
 		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
 		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Adding infispan translator and resource adapter"/>
@@ -271,77 +283,7 @@
 		</if>
 	</target>
     
-    <target name="setup-jdv" depends="add-translator-ra, stop-jdv-server"/>
+    <target name="setup-jdv" depends="install-jdv, add-translator-ra, stop-jdv-server"/>
 
-    <target name="setup-usecase" depends="install-jdv, copy-data, unzip-pojo, update-module, unzip-hotrod-modules, add-translator-ra, config-ra, stop-jdv-server, deploy-vdbs" >
-
-    </target>
-
-
-	<target name="unzip-pojo" >
-		<echo message="Unzipping Pojo into JDV"/>
-		<unzip src="${qspojo}/${pojo.zip}" dest="${jdv.home}" />
-		<!--copy todir="${jdv.home}/modules">
-			<fileset dir="${jdv.home}/jboss-datagrid-${jdg.patch.version}-eap-modules-remote-java-client/modules"/>
-		</copy-->
-	</target>
-	<target name="config-ra">
-		<echo message="Adding JDG resource-adapter"/>
-		<if>
-			<equals arg1="${os.family}" arg2="unix" />
-			<then>
-				<exec dir="${jdv.home}/bin" executable="sh">
-					<env key="JBOSS_HOME" value="${jdv.home}"/>
-					<arg line="jboss-cli.sh -c --file=${qscli}/create-datasources.cli"/>
-				</exec>
-				<exec dir="${jdv.home}/bin" executable="sh">
-					<env key="JBOSS_HOME" value="${jdv.home}"/>
-					<arg line="jboss-cli.sh -c --file=${qscli}/create-jdg-resource-adapter.cli"/>
-				</exec>
-			</then>
-			<elseif>
-				<equals arg1="${os.family}" arg2="windows" />
-				<then>
-					<exec dir="${jdv.home}/bin" executable="cmd">
-						<env key="JBOSS_HOME" value="${jdv.home}"/>
-						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
-						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-datasources.cli"/>
-					</exec>
-					<exec dir="${jdv.home}/bin" executable="cmd">
-						<env key="JBOSS_HOME" value="${jdv.home}"/>
-						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
-						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-jdg-resource-adapter.cli"/>
-					</exec>
-				</then>
-			</elseif>
-		</if>
-	</target>
-
-        <target name="update-module">
-                <echo message="Update infinispan-dsl resource adapter module pojo dependency"/>
-
-                <replace file="${jdv.home}/${module.relative}">
-                        <replacetoken>your.pojo.module</replacetoken>
-                        <replacevalue>com.client.quickstart.addressbook.pojos</replacevalue>
-                </replace>
-        </target>
-
-	<target name="copy-data" >
-		<echo message="Copying data from ${qsteiidfiles} to JDV server"/>
-		<copy todir="${jdv.home}/teiidfiles">
-			<fileset dir="${qsteiidfiles}"/>
-		</copy>
-	</target>
-
-	<target name="deploy-vdbs" >
-		<echo message="Deploying VDBs into JDV"/>
-
-                <copy todir="${jdv.home}/standalone/deployments">
-                        <fileset dir="${qsvdb}">
-                                <include name="**/*.xml"/>
-                                <include name="**/*.dodeploy"/>
-                        </fileset>
-                </copy>
-	</target>
 
 </project>

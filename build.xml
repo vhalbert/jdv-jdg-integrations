@@ -1,7 +1,7 @@
 <project name="jboss-data-virtualization" default="setup-jdg" basedir=".">
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
-	<!--loadproperties srcFile="build.properties"-->
+	<loadproperties srcFile="build.properties" />
 
 	<description>
         This project automates the deployment of all the necessary components 
@@ -11,11 +11,11 @@
 
 	<!-- Set necessary properties -->
 	<property name="patches" location="${patches.relative}"/>
-	<property name="target" location="${target.relative}/${qs-example}"/>
+	<property name="target" location="${target.relative}/${install-id}/"/>
 	<property name="install-configs" location="${install-configs.relative}"/>
 	<property name="binaries" location="${binaries.relative}"/>
-	<property name="jdg.home" location="${jdg.home.relative}"/>
-	<property name="jdv.home" location="${jdv.home.relative}"/>
+	<property name="jdg.home" location="${target.relative}/${install-id}/${jdg.relative.target.loc}"/>
+	<property name="jdv.home" location="${target.relative}/${install-id}/${jdv.relative.target.loc}"/>
 	<property name="cli" location="${cli.relative}"/>
         <property name="qsexample" location="${qs-example}"/>
         <property name="qscli" location="${qs-example}/${cli.relative}"/>
@@ -28,7 +28,9 @@
         <import file="${qsexample}/usecase-build.xml"/>
 <!-- import usecase build file -->
 
-
+        <echo message="Running use case ${qs-example}"/>
+        <echo message="Installing JDG to ${jdg.home}"/>
+        <echo message="Installing JDV to ${jdv.home}"/>
 
 	<target name="start-jdg-server">
 		<echo message="Starting the JBoss JDG ${jdg.version} server in clustered mode"/>
@@ -114,12 +116,28 @@
 		</if>
 	</target>
 
-	<target name="clean-jdg">
+
+    <target name="setup-jdg" depends="setup-jdg-caches, stop-jdg-server"/>
+
+    <target name="setup-jdv" depends="install-jdv, add-translator-ra, stop-jdv-server"/>
+
+
+	<target name="clean-jdg" if="is.jdg.exists" depends="test-jdg">
 		<echo message="Cleaning the ${jdg.home}/jdg folder"/>
 		<delete quiet="true" includeemptydirs="true">
 			<fileset dir="${jdg.home}" includes="**/*" />
 		</delete>
 	</target>
+
+        <target name="test-jdg">
+                <condition property="is.jdg.exists" value="true" >
+                        <and>
+                        <resourceexists>
+                                <file file="${jdg.home}" />
+                        </resourceexists>
+                        </and>
+                </condition>
+        </target>
 
 	<target name="unzip-jdg" depends="clean-jdg">
 		<echo message="Installing JDG ${jdg.version} to ${jdg.home}"/>
@@ -182,26 +200,58 @@
 		</if>
 	</target>
 
-    <target name="setup-jdg" depends="setup-jdg-caches, stop-jdg-server"/>
-
 
 	<target name="install-jdv" depends="clean-jdv, install-jdv-kit, unzip-hotrod-modules">
 
 	</target>
 
-        <target name="clean-jdv">
+        <target name="clean-jdv" if="is.jdv.exists" depends="test-jdv">
                 <echo message="Cleaning the ${jdv.home} folder"/>
                 <echo message="If this fails, manually delete ${jdv.home} folder and rerun"/>
-                <delete quiet="true" includeemptydirs="true">
-                <fileset dir="${jdv.home}" includes="**/*" />
+                <delete quiet="true" includeemptydirs="true" >
+                        <fileset dir="${jdv.home}" includes="**/*" />
                 </delete>
+
+		<if>
+			<equals arg1="${os.family}" arg2="unix" />
+			<then>
+				<exec dir="${jdv.home}" executable="sh" spawn="true">
+					<arg line="rm -rf ./*"/>
+				</exec>
+			</then>
+			<elseif>
+				<equals arg1="${os.family}" arg2="windows" />
+				<then>
+					<exec dir="${jdv.home}" executable="cmd" spawn="true">
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c del ${jdv.home}"/>
+					</exec>
+				</then>
+			</elseif>
+		</if>
+        </target>
+
+       <target name="test-jdv">
+                <condition property="is.jdv.exists" value="true" >
+                        <and>
+                        <resourceexists>
+                                <file file="${jdv.home}" />
+                        </resourceexists>
+                        </and>
+                </condition>
         </target>
 
 
 	<target name="install-jdv-kit">
 		<echo message="Installing JDV ${jdv.version} server"/>
+ 
+                <!--need to substitute the intallation location into the config file -->
+                <copy file="${install-configs}/dv-${jdv.version}-installation-config.xml" tofile="${target}/dv-${jdv.version}-installation-config.xml" overwrite="true"/>
+
+                <replace file="${target}/dv-${jdv.version}-installation-config.xml" token="{install.path}" value="${jdv.home}"/>
+ 
 		<java jar="${binaries}/jboss-dv-installer-${jdv.installer.version}.jar" fork="true" failonerror="true">
-                        <arg value="${install-configs}/dv-${jdv.version}-installation-config.xml"/>
+                        <arg value="${target}/dv-${jdv.version}-installation-config.xml"/>
 		</java>
 	</target>
 
@@ -246,7 +296,7 @@
 				</exec>
 			</then>
 			<elseif>
-				<equals arg1="${os.family}" arg2="windows" />
+				<equals arg1="${os.family}" arg2="windows" />      
 				<then>
 					<exec dir="${jdv.home}" executable="cmd">
 						<env key="JBOSS_HOME" value="${jdv.home}"/>
@@ -282,8 +332,6 @@
 			</elseif>
 		</if>
 	</target>
-    
-    <target name="setup-jdv" depends="install-jdv, add-translator-ra, stop-jdv-server"/>
-
+ 
 
 </project>

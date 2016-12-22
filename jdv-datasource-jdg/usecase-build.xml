@@ -1,12 +1,12 @@
 <project name="usecase"  basedir=".">
 
-      <loadproperties srcFile="./jdv-ext-mat-jdg/usecase.properties" />
+      <loadproperties srcFile="./jdv-datasource-jdg/usecase.properties" />
 
-     <echo message="Loaded use case ${qs-example} build file"/>
-  
+     <echo message="Loaded use case ${qs-example} build file"/> 
+ 
      <target name="setup-usecase" depends="install-jdv, copy-data, unzip-pojo, update-module, unzip-hotrod-modules, add-translator-ra, config-ra, stop-jdv-server, deploy-vdbs" >
 
-     </target>
+    </target>
 
 
 	<target name="copy-data" >

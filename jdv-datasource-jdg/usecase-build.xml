@@ -1,23 +1,20 @@
 <project name="usecase"  basedir=".">
 
-      <loadproperties srcFile="./${qs-example}/usecase.properties" />
-       
-        <property name="qscli" location="${qs-example}/${cli.relative}"/>
-        <property name="qspojo" location="${qs-example}/${pojo.relative}"/>
-        <property name="qsteiidfiles" location="${qs-example}/teiidfiles"/>
-        <property name="qsvdb" location="${qs-example}/vdb"/>
-
-     <echo message="Loaded use case ${qs-example} build file"/>
-     <echo message="Installing pojo from ${qspojo}"/>
-     <echo message="Installing vdbs from ${qsvdb}"/>
-     <echo message="Configuring RA from ${qscli}"/>
-
+      <loadproperties srcFile="./jdv-datasource-jdg/usecase.properties" />
 
      <echo message="Loaded use case ${qs-example} build file"/> 
  
-     <target name="setup-usecase" depends="install-jdv, unzip-pojo, update-module, unzip-hotrod-modules, add-translator-ra, config-ra, deploy-vdbs, stop-jdv-server" >
+     <target name="setup-usecase" depends="install-jdv, copy-data, unzip-pojo, update-module, unzip-hotrod-modules, add-translator-ra, config-ra, stop-jdv-server, deploy-vdbs" >
 
     </target>
+
+
+	<target name="copy-data" >
+		<echo message="Copying data from ${qsteiidfiles} to JDV server"/>
+		<copy todir="${jdv.home}/teiidfiles">
+			<fileset dir="${qsteiidfiles}"/>
+		</copy>
+	</target>
 
 	<target name="unzip-pojo" >
 		<echo message="Unzipping Pojo into JDV"/>
@@ -43,12 +40,21 @@
 			<then>
 				<exec dir="${jdv.home}/bin" executable="sh">
 					<env key="JBOSS_HOME" value="${jdv.home}"/>
+					<arg line="jboss-cli.sh -c --file=${qscli}/create-datasources.cli"/>
+				</exec>
+				<exec dir="${jdv.home}/bin" executable="sh">
+					<env key="JBOSS_HOME" value="${jdv.home}"/>
 					<arg line="jboss-cli.sh -c --file=${qscli}/create-jdg-resource-adapter.cli"/>
 				</exec>
 			</then>
 			<elseif>
 				<equals arg1="${os.family}" arg2="windows" />
 				<then>
+					<exec dir="${jdv.home}/bin" executable="cmd">
+						<env key="JBOSS_HOME" value="${jdv.home}"/>
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-datasources.cli"/>
+					</exec>
 					<exec dir="${jdv.home}/bin" executable="cmd">
 						<env key="JBOSS_HOME" value="${jdv.home}"/>
 						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>

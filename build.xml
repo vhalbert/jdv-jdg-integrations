@@ -9,22 +9,26 @@
         into JBoss Data Grid (verison: ${jdg.version})
         </description>
 
-        <import file="${qs-example}/usecase-build.xml"/>
-
 	<!-- Set necessary properties -->
 	<property name="patches" location="${patches.relative}"/>
-	<property name="target" location="${target.relative}/"/>
+	<property name="target" location="${target.relative}/${install-id}/"/>
 	<property name="install-configs" location="${install-configs.relative}"/>
 	<property name="binaries" location="${binaries.relative}"/>
-	<property name="jdg.home" location="${target.relative}/${qs-example}/${jdg.relative.target.loc}"/>
-	<property name="jdg.target" location="${target.relative}/${qs-example}"/>
-	<property name="jdv.home" location="${target.relative}/${qs-example}/${jdv.relative.target.loc}"/>
+	<property name="jdg.home" location="${target.relative}/${install-id}/${jdg.relative.target.loc}"/>
+	<property name="jdv.home" location="${target.relative}/${install-id}/${jdv.relative.target.loc}"/>
 	<property name="cli" location="${cli.relative}"/>
         <property name="qsexample" location="${qs-example}"/>
+        <property name="qscli" location="${qs-example}/${cli.relative}"/>
+        <property name="qspojo" location="${qs-example}/${pojo.relative}"/>
+        <property name="qsteiidfiles" location="${qs-example}/teiidfiles"/>
+        <property name="qsvdb" location="${qs-example}/vdb"/>
 
 	<osfamily property="os.family"/>
+
+        <import file="${qsexample}/usecase-build.xml"/>
 <!-- import usecase build file -->
 
+        <echo message="Running use case ${qs-example}"/>
         <echo message="Installing JDG to ${jdg.home}"/>
         <echo message="Installing JDV to ${jdv.home}"/>
 
@@ -47,9 +51,6 @@
 				</then>
 			</elseif>
 		</if>
-
-		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
-		<sleep seconds="${jdg.start.sleep}"/>
 	</target>
 	
 	<target name="start-jdv-server">
@@ -71,8 +72,6 @@
 				</then>
 			</elseif>
 		</if>
-		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
-		<sleep seconds="${jdg.start.sleep}"/>
 	</target>
 	
 	<target name="stop-jdg-server">
@@ -118,15 +117,15 @@
 	</target>
 
 
-    <target name="setup-jdg" depends="clean-jdg, setup-jdg-caches, stop-jdg-server"/>
+    <target name="setup-jdg" depends="setup-jdg-caches, stop-jdg-server"/>
 
-    <target name="setup-jdv" depends="clean-jdv, install-jdv, add-translator-ra, stop-jdv-server"/>
+    <target name="setup-jdv" depends="install-jdv, add-translator-ra, stop-jdv-server"/>
 
 
 	<target name="clean-jdg" if="is.jdg.exists" depends="test-jdg">
-		<echo message="Cleaning the ${jdg.target} folder"/>
+		<echo message="Cleaning the ${jdg.home}/jdg folder"/>
 		<delete quiet="true" includeemptydirs="true">
-			<fileset dir="${jdg.target}" includes="**/*" />
+			<fileset dir="${jdg.home}" includes="**/*" />
 		</delete>
 	</target>
 
@@ -140,9 +139,9 @@
                 </condition>
         </target>
 
-	<target name="unzip-jdg" depends="">
+	<target name="unzip-jdg" depends="clean-jdg">
 		<echo message="Installing JDG ${jdg.version} to ${jdg.home}"/>
-		<unzip src="${binaries}/jboss-datagrid-${jdg.version}-server.zip" dest="${jdg.target}" />
+		<unzip src="${binaries}/jboss-datagrid-${jdg.version}-server.zip" dest="${target}/jdg" />
 		<chmod perm="ugo+rx">
 			<fileset dir="${jdg.home}/bin">
 				<include name="**/*.sh"/>
@@ -152,6 +151,8 @@
 	</target>
 
 	<target name="apply-jdg-patch" depends="unzip-jdg,start-jdg-server" unless="skipPatching">
+		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
+		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Patching JBoss JDG ${jdg.version} server in standalone mode"/>
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
@@ -175,6 +176,8 @@
 	</target>
 
 	<target name="setup-jdg-caches" depends="apply-jdg-patch" unless="skipPatching">
+		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
+		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Patching JBoss JDG ${jdg.version} server in standalone mode"/>
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
@@ -198,29 +201,21 @@
 	</target>
 
 
-	<target name="install-jdv" depends="install-jdv-kit, apply-jdv-patch, unzip-hotrod-modules">
+	<target name="install-jdv" depends="clean-jdv, install-jdv-kit, unzip-hotrod-modules">
 
 	</target>
-
-        <target name="clean" depends="clean-jdg, clean-jdv" />
 
         <target name="clean-jdv" if="is.jdv.exists" depends="test-jdv">
                 <echo message="Cleaning the ${jdv.home} folder"/>
                 <echo message="If this fails, manually delete ${jdv.home} folder and rerun"/>
+                <delete quiet="true" includeemptydirs="true" >
+                        <fileset dir="${jdv.home}" includes="**/*" />
+                </delete>
 
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
 			<then>
-		<chmod perm="ugo+rx">
-			<fileset dir="${jdv.home}/dataVirtualization/teiid-dashboard/teiid-dashboard-builder.war/envelopes/Default_Envelope">
-				<include name="**/*"/>
-			</fileset>
-		</chmod>
 				<exec dir="${jdv.home}" executable="sh" spawn="true">
-					<arg line="rm -rf ./*"/>
-				</exec>
-
-				<exec dir="${jdv.home}/dataVirtualization" executable="sh" spawn="true">
 					<arg line="rm -rf ./*"/>
 				</exec>
 			</then>
@@ -268,19 +263,18 @@
 		</copy>
 	</target>
 
-        <target name="apply-jdv-patch"  >
- 		<if>
+        <target name="apply-jdv-patch" depends="start-jdv-server" >
+		<if>
 			<equals arg1="${os.family}" arg2="unix" />
 			<then>
-				<exec dir="${basedir}" executable="sh">
+				<exec dir="${cli}" executable="sh" spawn="true">
 					<arg line="jdv-apply-patch.sh ${patches}/${jdv.patch} ${jdv.home}"/>
 				</exec>
-
 			</then>
 			<elseif>
 				<equals arg1="${os.family}" arg2="windows" />
 				<then>
-					<exec dir="${basedir}" executable="cmd" spawn="true">
+					<exec dir="${cli}" executable="cmd" spawn="true">
 						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
 						<arg line="/c jdv-apply-patch.bat ${patches}/${jdv.patch} ${jdv.home}"/>
 					</exec>
@@ -289,16 +283,16 @@
 		</if>
         </target>
 
-	<target name="apply-jdv-patchx"   unless="skipPatching">
+	<target name="apply-jdv-patchx" depends="start-jdv-server"  unless="skipPatching">
+		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
+		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Patching JBoss JDV ${jdv.version} server in standalone mode"/>
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
 			<then>
-
 				<exec dir="${jdv.home}" executable="sh">
-                                        <env key="PATH" value="${env.PATH}"/>
 					<env key="JBOSS_HOME" value="${jdv.home}"/>
-					<arg line="java -jar ${patches}/${jdv.patch} --server ${jdv.home} --update jboss-dv"/>
+					<arg line="java -jar ${patches}/${jdv.patch} --server ${jdv.home}--update jboss-dv"/>
 				</exec>
 			</then>
 			<elseif>
@@ -307,21 +301,23 @@
 					<exec dir="${jdv.home}" executable="cmd">
 						<env key="JBOSS_HOME" value="${jdv.home}"/>
 						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
-						<arg line="java -jar ${patches}\${jdv.patch} --server ${jdv.home} --update jboss-dv"/>
+						<arg line="java -jar ${patches}\${jdv.patch} --server ${jdv.home}--update jboss-dv"/>
 					</exec>
 				</then>
 			</elseif>
 		</if>
 	</target>
 
-	<target name="add-translator-ra" depends="start-jdv-server" >
+	<target name="add-translator-ra" depends="apply-jdv-patch">
+		<echo message="Sleeping for ${jdg.start.sleep} seconds"/>
+		<sleep seconds="${jdg.start.sleep}"/>
 		<echo message="Adding infispan translator and resource adapter"/>
 		<if>
 			<equals arg1="${os.family}" arg2="unix" />
 			<then>
 				<exec dir="${jdv.home}/bin" executable="sh">
 					<env key="JBOSS_HOME" value="${jdv.home}"/>
-					<arg line="jboss-cli.sh -c --file=${jdv.home}/docs/teiid/datasources/infinispan/add-infinispan-cache-dsl-translator.cli"/>
+					<arg line="jboss-cli.sh -c --file=${cli}/setup-translators-ra.cli"/>
 				</exec>
 			</then>
 			<elseif>
@@ -330,7 +326,7 @@
 					<exec dir="${jdv.home}/bin" executable="cmd">
 						<env key="JBOSS_HOME" value="${jdv.home}"/>
 						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
-						<arg line="/c jboss-cli.bat -c --file=${jdv.home}\docs/teiid\datasources\infinispan\add-infinispan-cache-dsl-translator.cli"/>
+						<arg line="/c jboss-cli.bat -c --file=${cli}\setup-translators-ra.cli"/>
 					</exec>
 				</then>
 			</elseif>

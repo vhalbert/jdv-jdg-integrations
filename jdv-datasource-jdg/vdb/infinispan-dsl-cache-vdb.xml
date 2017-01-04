@@ -9,7 +9,7 @@
     <model name="People" type="Physical">
         <property name="importer.useFullSchemaName" value="false"/>
            
-        <source name="infinispan-cache-dsl-connector" translator-name="infinispan-cache-dsl" connection-jndi-name="java:/PersonJDGSource" />
+        <source name="infinispan-cache-dsl-connector" translator-name="infinispan-cache-dsl" connection-jndi-name="java:/infinispanRemoteDSL" />
     </model>
 
 

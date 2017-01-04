@@ -1,4 +1,4 @@
 connect
-patch apply ../../../../patches/jboss-datagrid-6.6.1-server-patch.zip
+patch apply ../../../../../patches/jboss-datagrid-6.6.1-server-patch.zip
 
 disconnect

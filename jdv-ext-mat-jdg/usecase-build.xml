@@ -1,6 +1,11 @@
 <project name="usecase"  basedir=".">
 
-      <loadproperties srcFile="./jdv-ext-mat-jdg/usecase.properties" />
+      <loadproperties srcFile="./${qs-example}/usecase.properties" />
+
+        <property name="qscli" location="${qs-example}/${cli.relative}"/>
+        <property name="qspojo" location="${qs-example}/${pojo.relative}"/>
+        <property name="qsteiidfiles" location="${qs-example}/teiidfiles"/>
+        <property name="qsvdb" location="${qs-example}/vdb"/>
 
      <echo message="Loaded use case ${qs-example} build file"/>
   
@@ -17,7 +22,7 @@
 	</target>
 
 	<target name="unzip-pojo" >
-		<echo message="Unzipping Pojo into JDV"/>
+		<echo message="Unzipping Pojo ${pojo.zip} into JDV"/>
 		<unzip src="${qspojo}/${pojo.zip}" dest="${jdv.home}" />
 		<!--copy todir="${jdv.home}/modules">
 			<fileset dir="${jdv.home}/jboss-datagrid-${jdg.patch.version}-eap-modules-remote-java-client/modules"/>
@@ -29,7 +34,7 @@
 
                 <replace file="${jdv.home}/${module.relative}">
                         <replacetoken>your.pojo.module</replacetoken>
-                        <replacevalue>com.client.quickstart.addressbook.pojos</replacevalue>
+                        <replacevalue>com.client.quickstart.remotecache.pojos</replacevalue>
                 </replace>
         </target>
 

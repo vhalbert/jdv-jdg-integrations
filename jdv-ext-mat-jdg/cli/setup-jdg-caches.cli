@@ -6,6 +6,4 @@ connect
 /subsystem="infinispan"/cache-container="clustered"/distributed-cache="primary_cache"/locking="LOCKING":add(acquire-timeout="20000",concurrency-level="100",striping="true")
 /subsystem="infinispan"/cache-container="clustered"/distributed-cache="staging_cache":add(indexing="ALL",indexing-properties={"default.directory_provider" => "ram"},mode="SYNC",start="EAGER")
 /subsystem="infinispan"/cache-container="clustered"/distributed-cache="staging_cache"/locking="LOCKING":add(acquire-timeout="20000",concurrency-level="100",striping="true")
-/subsystem="infinispan"/cache-container="clustered"/distributed-cache="datasource_cache":add(indexing="ALL",indexing-properties={"default.directory_provider" => "ram"},mode="SYNC",start="EAGER")
-/subsystem="infinispan"/cache-container="clustered"/distributed-cache="datasource_cache"/locking="LOCKING":add(acquire-timeout="20000",concurrency-level="100",striping="true")
 

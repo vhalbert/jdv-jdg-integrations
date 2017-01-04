@@ -136,6 +136,54 @@ To see the data that's been materializated, use:
 
 To PersonMatCache is the model of the caches used for materialization.
 
+* To test the materialization process, do the following:
+
+perform an insert to the Product table:
+
+[source,sql]
+----
+INSERT INTO "Accounts"."PRODUCT" (ID, SYMBOL, COMPANY_NAME) VALUES (2000, 'RHT', 'Red Hat Inc.');
+commit;
+----
+
+(needed the commit when using SQuirrel).
+
+wait 20 seconds so that the TTL expires to refresh (execute) the materialization.
+
+Now reissue the Select query and should see RHT in the list.
+
+
+
 ## JDV-DATASOURCE-JDG Use Case
 
+If the jdv-datasource-jdg use case was installed, then the following VDB's can be connected to:
+*  jdbc:teiid:People@mm://localhost:31000
+
+The follow are example queries for reading/writing to a remote cache via VDB People
+
+[source,sql]
+.*Example Query SQL*
+----
+select name, email, id from Person 
+Insert into Person (id, name, email) Values (100, 'TestPerson', 'test@person.com');
+Insert into Person (id, name, email) Values (200, 'TestPerson2', 'test2@person.com');
+
+select name, email, id from Person where id = 100
+Update Person set name='testPerson 100' where id = 100 then - select name, email, id from Person 
+
+
+Insert into Address (id, Address, City, State) Values (200, '1212 Stratford', 'Davisburg', 'OH')
+Insert into Address (id, Address, City, State) Values (100, '854 Motely', 'Dallas', 'TX')
+
+select a.id, a.name, b.Address, b.City, b.State from Person as a, Address as b WHERE a.id = b.id
+
+
+Insert into PhoneNumber (id, number) Values (200, '603-351-3022');
+Insert into PhoneNumber (id, number) Values (100, '214-951-7651');
+
+select a.id, a.name, b.number from Person as a, PhoneNumber as b WHERE a.id = b.id
+
+And to join them all together:
+
+select a.id, a.name, b.Address, b.City, b.State, c.number from Person as a, Address as b, PhoneNumber as c WHERE a.id = b.id and a.id = c.id
 

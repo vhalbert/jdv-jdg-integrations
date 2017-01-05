@@ -195,9 +195,13 @@ Insert into PhoneNumber (id, number) Values (200, '603-351-3022');
 Insert into PhoneNumber (id, number) Values (100, '214-951-7651');
 
 select a.id, a.name, b.number from Person as a, PhoneNumber as b WHERE a.id = b.id
+----
+
 
 Select All the infomation for a person:
 
+[source,sql]
+----
 select a.id, a.name, b.Address, b.City, b.State, c.number from Person as a, Address as b, PhoneNumber as c WHERE a.id = b.id and a.id = c.id
 ----
 

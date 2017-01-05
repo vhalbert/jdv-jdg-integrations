@@ -131,13 +131,18 @@ If you chose to use the 'setup-usecase' option when running the installation, th
 ### JDV-EXT-MAT-JDG Use Case
 
 If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be connected to:
-*  jdbc:teiid:Portolio@mm://localhost:31000
-*  jdbc:teiid:PeopleMat@mm://localhost:31000
+
+-  jdbc:teiid:Portolio@mm://localhost:31000
+-  jdbc:teiid:PeopleMat@mm://localhost:31000
 
 The Portfolio is the data that's used for materialization.  The PeopleMat is where the materialization models are configured.
 
 To see the data that's been materializated, use:
-*  Select * from PersonMatView
+
+[source,sql]
+----
+Select * from PersonMatView
+----
 
 To PersonMatCache is the model of the caches used for materialization.
 
@@ -155,7 +160,8 @@ commit;
 
 wait 20 seconds.
 
-reissue query:  
+reissue query:
+
 [source,sql]
 ----
 Select * from PersonMatView where id = '19980002'
@@ -167,7 +173,8 @@ to confirm row is no longer included.
 ## JDV-DATASOURCE-JDG Use Case
 
 If the jdv-datasource-jdg use case was installed, then the following VDB's can be connected to:
-*  jdbc:teiid:People@mm://localhost:31000
+
+-  jdbc:teiid:People@mm://localhost:31000
 
 There should be 3 tables; 1) Person, 2) Address and 3) PhoneNumber
 

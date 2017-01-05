@@ -33,18 +33,20 @@ where:
 ```
 
 ```sh
-# To see all the available commands run the script with no arguments.
+# For help (see all available commands), run the script with no arguments.
 ```
 
 **Commands for JDG** 
-setup-jdg
-start-jdg-server
-stop-jdg-server
+
+* setup-jdg
+* start-jdg-server
+* stop-jdg-server
 
 **Commands for JDV**
-setup-usecase (use setup-jdv to install JDV without use case, usefull if you want to start from scratch and use Teiid Designer)
-start-jdv-server
-stop-jdv-server
+
+* setup-usecase (use setup-jdv to install JDV without use case, usefull if you want to start from scratch and use Teiid Designer)
+* start-jdv-server
+* stop-jdv-server
 
 
 ### Running the setup
@@ -54,6 +56,7 @@ stop-jdv-server
 Going forward we will refer to the folder `target/{usecase}/jdg/jboss-datagrid-6.6.0-server/` as **$JDG_HOME**
 
 The setup of JDG will install JDG server and then configure the following caches:
+
 * jdv-datasource-jdg usecase
 ** datasource_cache 
 * jdv-ext-mat-jdg usecase
@@ -151,7 +154,12 @@ commit;
 
 wait 20 seconds.
 
-reissue query:  Select * from PersonMatView where id = '19980002' 
+reissue query:  
+[source,sql]
+----
+Select * from PersonMatView where id = '19980002'
+----
+
 to confirm row is no longer included.
 
 
@@ -163,11 +171,13 @@ If the jdv-datasource-jdg use case was installed, then the following VDB's can b
 There should be 3 tables; 1) Person, 2) Address and 3) PhoneNumber
 
 The relationships are:
-People  ---  1-to-1 -- Address
-People  ---  1-to-m -- PhoneNumber
+- People  ---  1-to-1 -- Address
+- People  ---  1-to-m -- PhoneNumber
 
 The following are example queries that can be run to demonstrate SELECT and INSERT of the JDG Cache:
 
+[source,sql]
+----
 select name, email, id from Person 
 Insert into Person (id, name, email) Values (100, 'TestPerson', 'test@person.com');
 Insert into Person (id, name, email) Values (200, 'TestPerson2', 'test2@person.com');
@@ -188,5 +198,6 @@ select a.id, a.name, b.number from Person as a, PhoneNumber as b WHERE a.id = b.
 Select All the infomation for a person:
 
 select a.id, a.name, b.Address, b.City, b.State, c.number from Person as a, Address as b, PhoneNumber as c WHERE a.id = b.id and a.id = c.id
+----
 
 

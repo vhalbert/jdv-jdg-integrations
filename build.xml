@@ -217,9 +217,13 @@
 	<target name="install-jdv" depends="clean-jdv, install-jdv-kit, apply-jdv-patch, unzip-hotrod-modules" />
 
         <target name="clean-jdv" if="is.jdv.exists" depends="test-jdv">
+                <echo message="-----------------------------------------------------------"/>
+                <echo message=" "/>
                 <echo message="Cleaning the ${jdv.home} folder"/>
                 <echo message="If this fails, manually delete ${jdv.home} folder and rerun"/>
-                <delete quiet="true" includeemptydirs="true" >
+                <echo message=" "/>
+                <echo message="-----------------------------------------------------------"/>
+               <delete quiet="true" includeemptydirs="true" >
                         <fileset dir="${jdv.home}" includes="**/*" />
                 </delete>
 

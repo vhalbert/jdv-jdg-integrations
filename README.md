@@ -57,19 +57,19 @@ Going forward we will refer to the folder `target/{usecase}/jdg/jboss-datagrid-6
 
 The setup of JDG will install JDG server and then configure the following caches:
 
-* jdv-datasource-jdg usecase
-** datasource_cache 
-* jdv-ext-mat-jdg usecase
-** primary_cache
-** staging_cache
-** alias_cache
+- jdv-datasource-jdg usecase
+  * datasource_cache 
+- jdv-ext-mat-jdg usecase
+  * primary_cache
+  * staging_cache
+  * lias_cache
 
 ```sh
 # Kick off JDG setup and wait for it to complete
 ./install-ext-mat-jdg setup-jdg
 or
 ./install-jdg-datasource.sh setup-jdg
-
+```
 
 #### Setup JBoss Data Virtualization
 

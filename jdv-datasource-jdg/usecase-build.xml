@@ -1,0 +1,63 @@
+<project name="usecase"  basedir=".">
+
+      <loadproperties srcFile="./jdv-datasource-jdg/usecase.properties" />
+
+     <echo message="Loaded use case ${qs-example} build file"/> 
+ 
+     <target name="setup-usecase" depends="install-jdv, unzip-pojo, update-module, unzip-hotrod-modules, add-translator-ra, config-ra, stop-jdv-server, deploy-vdbs" >
+
+    </target>
+
+	<target name="unzip-pojo" >
+		<echo message="Unzipping Pojo into JDV"/>
+		<unzip src="${qspojo}/${pojo.zip}" dest="${jdv.home}" />
+		<!--copy todir="${jdv.home}/modules">
+			<fileset dir="${jdv.home}/jboss-datagrid-${jdg.patch.version}-eap-modules-remote-java-client/modules"/>
+		</copy-->
+	</target>
+
+        <target name="update-module">
+                <echo message="Update infinispan-dsl resource adapter module pojo dependency"/>
+
+                <replace file="${jdv.home}/${module.relative}">
+                        <replacetoken>your.pojo.module</replacetoken>
+                        <replacevalue>com.client.quickstart.addressbook.pojos</replacevalue>
+                </replace>
+        </target>
+
+	<target name="config-ra" depends="start-jdv-server" >
+		<echo message="Adding JDG resource-adapter"/>
+		<if>
+			<equals arg1="${os.family}" arg2="unix" />
+			<then>
+				<exec dir="${jdv.home}/bin" executable="sh">
+					<env key="JBOSS_HOME" value="${jdv.home}"/>
+					<arg line="jboss-cli.sh -c --file=${qscli}/create-jdg-resource-adapter.cli"/>
+				</exec>
+			</then>
+			<elseif>
+				<equals arg1="${os.family}" arg2="windows" />
+				<then>
+					<exec dir="${jdv.home}/bin" executable="cmd">
+						<env key="JBOSS_HOME" value="${jdv.home}"/>
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-jdg-resource-adapter.cli"/>
+					</exec>
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+        <!-- deploy the VDB's when the server is shut down -->
+	<target name="deploy-vdbs" >
+		<echo message="Deploying VDBs into JDV"/>
+
+                <copy todir="${jdv.home}/standalone/deployments">
+                        <fileset dir="${qsvdb}">
+                                <include name="**/*.xml"/>
+                                <include name="**/*.dodeploy"/>
+                        </fileset>
+                </copy>
+	</target>
+
+</project>

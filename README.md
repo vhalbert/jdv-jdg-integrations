@@ -134,8 +134,8 @@ If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be c
 
 [source]
 ----
--  jdbc:teiid:Portolio@mm://localhost:31000
--  jdbc:teiid:PeopleMat@mm://localhost:31000
+  jdbc:teiid:Portolio@mm://localhost:31000
+  jdbc:teiid:PeopleMat@mm://localhost:31000
 ----
 
 The Portfolio is the data that's used for materialization.  The PeopleMat is where the materialization models are configured.
@@ -179,7 +179,7 @@ If the jdv-datasource-jdg use case was installed, then the following VDB's can b
 
 [source]
 ----
--  jdbc:teiid:People@mm://localhost:31000
+  jdbc:teiid:People@mm://localhost:31000
 ----
 
 There should be 3 tables; 1) Person, 2) Address and 3) PhoneNumber

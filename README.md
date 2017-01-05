@@ -132,7 +132,7 @@ If you chose to use the 'setup-usecase' option when running the installation, th
 
 If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be connected to:
 
-[source]
+[source,text]
 ----
   jdbc:teiid:Portolio@mm://localhost:31000
   jdbc:teiid:PeopleMat@mm://localhost:31000
@@ -177,7 +177,7 @@ to confirm row is no longer included.
 
 If the jdv-datasource-jdg use case was installed, then the following VDB's can be connected to:
 
-[source]
+[source,text]
 ----
   jdbc:teiid:People@mm://localhost:31000
 ----

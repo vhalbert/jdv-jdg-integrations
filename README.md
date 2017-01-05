@@ -58,11 +58,11 @@ Going forward we will refer to the folder `target/{usecase}/jdg/jboss-datagrid-6
 The setup of JDG will install JDG server and then configure the following caches:
 
 - jdv-datasource-jdg usecase
-  * datasource_cache 
+  * datasourceCache 
 - jdv-ext-mat-jdg usecase
-  * primary_cache
-  * staging_cache
-  * lias_cache
+  * primaryCache
+  * stagingCache
+  * aliasCache
 
 ```sh
 # Kick off JDG setup and wait for it to complete
@@ -82,16 +82,17 @@ Use one of the following commands to setup the JDV server. Going forward we will
 To setup JDV, that does everthing setup-jdv does, but also configures a resource-adapter to connect to JDG, deploys the pojo, updates the infinispan-dsl resource-adapter module pojo dependency and deploys the Portfolio and PeopleMat VDB's., run the following:
 
 ```sh
-# 2) Kick off JDG and JDG materialization usecase setup
+# Setup JDV usecase 
 ./install-ext-mat-jdg setup-usecase 
 or 
 ./install-jdg-datasource setup-usecase
 ```
+or
 
 To setup JDV and to also install the hot rod client, run:
 
 ```sh
-# 1) Kick off JDV setup
+# Setup JDV, with no usecase.
 ./install-ext-mat-jdg setup-jdv 
 or
 ./install-jdg-datasource.sh setup-jdv
@@ -125,7 +126,7 @@ or
 
 ## Use Cases
 
-If you chose to use the 'setup-usecase' option when running the installation, the following describes how to access those vdb'.s
+If you chose to use the 'setup-usecase' option when running the installation, the following describes accessing those vdb'.s and example queris that can be used.
 
 ### JDV-EXT-MAT-JDG Use Case
 

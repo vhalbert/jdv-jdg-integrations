@@ -1,4 +1,6 @@
 target/
 binaries/apache-ant-1.9.7/
 *.jar
-*.zip
+binaries/*.zip
+patches/*.zip
+

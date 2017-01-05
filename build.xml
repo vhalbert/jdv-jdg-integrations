@@ -146,7 +146,17 @@
                 </condition>
         </target>
 
-	<target name="unzip-jdg" depends="clean-jdg">
+        <target name="jdg-binary-exist">
+                <condition property="is.jdgbinary.exists" value="true" >
+                        <and>
+                        <resourceexists>
+                                <file file="${binaries}/jboss-datagrid-${jdg.version}-server.zip" />
+                        </resourceexists>
+                        </and>
+                </condition>
+        </target>
+
+	<target name="unzip-jdg" if="is.jdgbinary.exists" depends="jdg-binary-exist">
 		<echo message="Installing JDG ${jdg.version} to ${jdg.home}"/>
 		<unzip src="${binaries}/jboss-datagrid-${jdg.version}-server.zip" dest="${target}" />
 		<chmod perm="ugo+rx">

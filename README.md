@@ -132,8 +132,11 @@ If you chose to use the 'setup-usecase' option when running the installation, th
 
 If the jdv-ext-mat-jdg use case was installed, then the following VDB's can be connected to:
 
+[source]
+----
 -  jdbc:teiid:Portolio@mm://localhost:31000
 -  jdbc:teiid:PeopleMat@mm://localhost:31000
+----
 
 The Portfolio is the data that's used for materialization.  The PeopleMat is where the materialization models are configured.
 
@@ -174,7 +177,10 @@ to confirm row is no longer included.
 
 If the jdv-datasource-jdg use case was installed, then the following VDB's can be connected to:
 
+[source]
+----
 -  jdbc:teiid:People@mm://localhost:31000
+----
 
 There should be 3 tables; 1) Person, 2) Address and 3) PhoneNumber
 

@@ -1,0 +1,69 @@
+<project name="usecase"  basedir=".">
+
+      <loadproperties srcFile="./${qs-example}/usecase.properties" />
+
+     <echo message="Loaded use case ${qs-example} build file"/> 
+ 
+     <target name="setup-usecase" depends="install-jdv, usecase-modules, unzip-hotrod-modules, add-translator-ra, usecase-resource-adapter, stop-jdv-server, usecase-vdbs" >
+
+    </target>
+
+
+        <target name="usecase-modules" depends="unzip-pojo, update-module" >
+
+
+        <!-- POJO zip should contain the modules folder, otherwise, append it to make ${jdv.home}/modules -->
+	<target name="unzip-pojo" >
+		<echo message="Unzipping Pojo for usecase ${qs-example} into JDV"/>
+
+		<unzip src="${qspojo}/${pojo.zip}" dest="${jdv.home}" />
+	</target>
+
+        <!-- This is needed when pojo's with annotations is being used -->
+        <!-- REQUIRED CHANGE - enter.your.pojo.module.name.here with you pojo module name --> 
+        <target name="update-module">
+                <echo message="Update infinispan-dsl resource adapter module pojo dependency"/>
+
+                <replace file="${jdv.home}/${module.relative}">
+                        <replacetoken>your.pojo.module</replacetoken>
+                        <replacevalue>enter.your.pojo.module.name.here</replacevalue>
+                </replace>
+        </target>
+
+	<target name="usecase-resource-adapter" depends="start-jdv-server" >
+		<echo message="Adding usecase ${qs-example} resource-adapter"/>
+		<if>
+			<equals arg1="${os.family}" arg2="unix" />
+			<then>
+				<exec dir="${jdv.home}/bin" executable="sh">
+					<env key="JBOSS_HOME" value="${jdv.home}"/>
+					<arg line="jboss-cli.sh -c --file=${qscli}/create-jdg-resource-adapter.cli"/>
+				</exec>
+			</then>
+			<elseif>
+				<equals arg1="${os.family}" arg2="windows" />
+				<then>
+					<exec dir="${jdv.home}/bin" executable="cmd">
+						<env key="JBOSS_HOME" value="${jdv.home}"/>
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c jboss-cli.bat -c --file=${qscli}\create-jdg-resource-adapter.cli"/>
+					</exec>
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+        <!-- The vdb is deployed when its down so that the server is restarted after installing the resource-adapters -->
+	<target name="usecase-vdbs" >
+		<echo message="Deploying VDBs into JDV"/>
+
+                <copy todir="${jdv.home}/standalone/deployments">
+                        <fileset dir="${qsvdb}">
+                                <include name="**/*.xml"/>
+                                <include name="**/*.dodeploy"/>
+                                <include name="**/*.vdb"/>
+                        </fileset>
+                </copy>
+	</target>
+
+</project>

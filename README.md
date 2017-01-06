@@ -4,6 +4,7 @@ This repository contains the following quick starts for the various JDG integrat
 
 *  jdv-ext-mat-jdg : JDV External Materialization into JDG Cache
 *  jdv-datasource-jdg  : JDV Access Remote JDG Cache as a Data Source
+*  usecase_template : used for configuring your own example, see the [Usecase Template] (usecase_template/README.md) for more information
 
 This repo is put together to help automate/speed up bulk of the setup effort in configuring JDG and JDV to demonstrate these use cases.
 

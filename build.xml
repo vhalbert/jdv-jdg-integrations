@@ -346,6 +346,23 @@
 			</elseif>
 		</if>
 	</target>
+
+        <target name="clone-template">
+
+		<echo message="Cloning template to create usecase ${new-usecase}"/>
+
+		<copy todir="${basedir}/${new-usecase}">
+			<fileset dir="${basedir}/usecase_template"/>
+		</copy>
+
+                <echo message="-----------------------------------------------------------"/>
+                <echo message=" "/>
+		<echo message="goto ${basedir}/${new-usecase} to find the cli, pojo and vdb folders for cutomization"/>
+                <echo message=" "/>
+                <echo message="-----------------------------------------------------------"/>
+
+
+        </target>
  
 
 </project>

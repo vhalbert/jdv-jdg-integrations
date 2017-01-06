@@ -6,10 +6,10 @@
  
      <target name="setup-usecase" depends="install-jdv, usecase-modules, unzip-hotrod-modules, add-translator-ra, usecase-resource-adapter, stop-jdv-server, usecase-vdbs" >
 
-    </target>
+     </target>
 
 
-        <target name="usecase-modules" depends="unzip-pojo, update-module" >
+        <target name="usecase-modules" depends="unzip-pojo, update-module" />
 
 
         <!-- POJO zip should contain the modules folder, otherwise, append it to make ${jdv.home}/modules -->

@@ -8,6 +8,30 @@
 
      </target>
 
+	<target name="add-translator-ra" depends="start-jdv-server">
+		<echo message="Adding infispan translator and resource adapter"/>
+		<if>
+			<equals arg1="${os.family}" arg2="unix" />
+			<then>
+				<exec dir="${jdv.home}/bin" executable="sh">
+					<env key="JBOSS_HOME" value="${jdv.home}"/>
+					<arg line="jboss-cli.sh -c --file=${jdv.home}/${jdv.config.translator}"/>
+				</exec>
+			</then>
+			<elseif>
+				<equals arg1="${os.family}" arg2="windows" />
+				<then>
+					<exec dir="${jdv.home}/bin" executable="cmd">
+						<env key="JBOSS_HOME" value="${jdv.home}"/>
+						<env key="PATH" path="${env.PATH};C:\WINDOWS\system32"/>
+						<arg line="/c jboss-cli.bat -c --file=${jdv.home}\${jdv.config.translator}"/>
+					</exec>
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+
 
         <target name="usecase-modules" depends="unzip-pojo, update-module" />
 
